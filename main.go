@@ -5,7 +5,6 @@ import (
 	"golang.org/x/net/html"
 	"net/http"
 	"os"
-	"strings"
 )
 
 // Helper function to pull the href attribute from a Token
@@ -44,7 +43,6 @@ func crawl(url string, ch chan string, chFinished chan bool) {
 
 	for {
 		tt := z.Next()
-
 		switch {
 		case tt == html.ErrorToken:
 			// End of the document, we're done
@@ -64,11 +62,7 @@ func crawl(url string, ch chan string, chFinished chan bool) {
 				continue
 			}
 
-			// Make sure the url begines in http**
-			hasProto := strings.Index(url, "http") == 0
-			if hasProto {
-				ch <- url
-			}
+			ch <- url
 		}
 	}
 }
@@ -98,7 +92,7 @@ func main() {
 
 	// We're done! Print the results...
 
-	fmt.Println("\nFound", len(foundUrls), "unique urls:\n")
+	fmt.Println("\nFound", len(foundUrls), "unique image source:\n")
 
 	for url, _ := range foundUrls {
 		fmt.Println(" - " + url)
