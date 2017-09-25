@@ -13,9 +13,8 @@ func downloadFromUrl(url string) {
 	tokens := strings.Split(url, "/")
 	fileName := tokens[len(tokens)-1]
 	fmt.Println("Downloading", url, "to", fileName)
-	fileName = "./Downloads" + fileName
 
-	output, err := os.Create(fileName)
+	output, err := os.Create("./tmp/" + fileName)
 	if err != nil {
 		fmt.Println("Error while creating", fileName, "-", err)
 		return
@@ -29,6 +28,7 @@ func downloadFromUrl(url string) {
 	}
 	defer response.Body.Close()
 
+	fmt.Println(output)
 	n, err := io.Copy(output, response.Body)
 	if err != nil {
 		fmt.Println("Error while downloading", url, "-", err)
