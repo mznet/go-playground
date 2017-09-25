@@ -5,7 +5,38 @@ import (
 	"golang.org/x/net/html"
 	"net/http"
 	"os"
+	"strings"
+	"io"
 )
+
+func downloadFromUrl(url string) {
+	tokens := strings.Split(url, "/")
+	fileName := tokens[len(tokens)-1]
+	fmt.Println("Downloading", url, "to", fileName)
+	fileName = "./Downloads" + fileName
+
+	output, err := os.Create(fileName)
+	if err != nil {
+		fmt.Println("Error while creating", fileName, "-", err)
+		return
+	}
+	defer output.Close()
+
+	response, err := http.Get(url)
+	if err != nil {
+		fmt.Println("Error while downloading", url, "-", err)
+		return
+	}
+	defer response.Body.Close()
+
+	n, err := io.Copy(output, response.Body)
+	if err != nil {
+		fmt.Println("Error while downloading", url, "-", err)
+		return
+	}
+
+	fmt.Println(n, "bytes downloaded.")
+}
 
 // Helper function to pull the href attribute from a Token
 func getHref(t html.Token) (ok bool, href string) {
@@ -95,7 +126,9 @@ func main() {
 	fmt.Println("\nFound", len(foundUrls), "unique image source:\n")
 
 	for url, _ := range foundUrls {
-		fmt.Println(" - " + url)
+		imageUrl := "http:" + url
+		fmt.Println(" - " + imageUrl)
+		downloadFromUrl(imageUrl)
 	}
 
 	close(chUrls)
