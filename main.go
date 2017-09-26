@@ -7,14 +7,22 @@ import (
 	"os"
 	"strings"
 	"io"
+	"time"
 )
 
-func downloadFromUrl(url string) {
+func downloadFromUrl(url string, timestamp string) {
 	tokens := strings.Split(url, "/")
 	fileName := tokens[len(tokens)-1]
 	fmt.Println("Downloading", url, "to", fileName)
 
-	output, err := os.Create("./tmp/" + fileName)
+	path := "./tmp/" + timestamp
+
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		os.Mkdir(path, 0755)
+	}
+
+	output, err := os.Create(path + "/" + fileName)
+	
 	if err != nil {
 		fmt.Println("Error while creating", fileName, "-", err)
 		return
@@ -101,6 +109,7 @@ func crawl(url string, ch chan string, chFinished chan bool) {
 func main() {
 	foundUrls := make(map[string]bool)
 	seedUrls := os.Args[1:]
+	timestamp := time.Now().Format("20060102150405")
 
 	// Channels
 	chUrls := make(chan string)
@@ -128,7 +137,7 @@ func main() {
 	for url, _ := range foundUrls {
 		imageUrl := "http:" + url
 		fmt.Println(" - " + imageUrl)
-		downloadFromUrl(imageUrl)
+		downloadFromUrl(imageUrl, timestamp)
 	}
 
 	close(chUrls)
