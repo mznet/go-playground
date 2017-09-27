@@ -10,6 +10,7 @@ import (
 )
 
 func main() {
+	var imageUrl string
 	foundUrls := make(map[string]bool)
 	seedUrls := os.Args[1:]
 	extArray := [2]string { "jpg", "png" }
@@ -48,7 +49,12 @@ func main() {
 
 		}
 
-		imageUrl := "http:" + url
+		imageUrl = "http:" + url
+
+		if strings.Contains(url, "http:") {
+			imageUrl = url
+		}
+
 		fmt.Println(" - " + imageUrl)
 
 		crawler.DownloadFromUrl(imageUrl, timestamp)
