@@ -9,6 +9,11 @@ import (
 	"strings"
 )
 
+type Response struct {
+	hostname string
+	path string
+}
+
 func main() {
 	var imageUrl string
 	foundUrls := make(map[string]bool)
