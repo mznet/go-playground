@@ -12,6 +12,13 @@ import(
 	"net/http"
 )
 
+type configuration struct {
+	awsAccessKey `yaml:"awsAccessKey"`
+	awsSecret `yaml:"awsSecret"`
+	token `yaml: "token"`
+	region `yaml: "region"`
+}
+
 func UploadToS3(fileName string) {
 	aws_access_key_id := "Insert Key ID here"
 	aws_secret_access_key := "Insert Secret Here"
