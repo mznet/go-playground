@@ -16,6 +16,7 @@ type Response struct {
 
 func main() {
 	var imageUrl string
+
 	foundUrls := make(map[string]bool)
 	seedUrls := os.Args[1:]
 	extArray := [2]string { "jpg", "png" }
