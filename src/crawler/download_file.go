@@ -6,6 +6,7 @@ import (
 	"os"
 	"net/http"
 	"io"
+	"aws"
 )
 
 func DownloadFromUrl(url string, timestamp string) {
@@ -42,4 +43,6 @@ func DownloadFromUrl(url string, timestamp string) {
 	}
 
 	fmt.Println(n, "bytes downloaded.")
+	aws.UploadToS3(path)
+
 }

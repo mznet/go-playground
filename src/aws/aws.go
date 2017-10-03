@@ -12,7 +12,7 @@ import(
 	"net/http"
 )
 
-func UploadToS3(fileName) {
+func UploadToS3(fileName string) {
 	aws_access_key_id := "Insert Key ID here"
 	aws_secret_access_key := "Insert Secret Here"
 	token := ""
@@ -27,7 +27,7 @@ func UploadToS3(fileName) {
 
 	cfg := aws.NewConfig().WithRegion("eu-central-1").WithCredentials(creds)
 
-	svc := s3.New(sessions.New(), cfg)
+	svc := s3.New(session.New(), cfg)
 
 	file, err := os.Open(fileName)
 
@@ -47,7 +47,7 @@ func UploadToS3(fileName) {
 
 	fileBytes := bytes.NewReader(buffer)
 	fileType := http.DetectContentType(buffer)
-	path = fileName
+	path := fileName
 
 	params := &s3.PutObjectInput{
 		Bucket: aws.String(bucketName),
