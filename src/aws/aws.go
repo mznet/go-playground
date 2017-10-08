@@ -10,21 +10,35 @@ import(
 	"os"
 	"bytes"
 	"net/http"
+	"io/ioutil"
+	"gopkg.in/yaml.v2"
 )
 
-type configuration struct {
-	awsAccessKey `yaml:"awsAccessKey"`
-	awsSecret `yaml:"awsSecret"`
-	token `yaml: "token"`
-	region `yaml: "region"`
+type Config struct {
+	AccessKey string `yaml:"access_key"`
+	Secret string `yaml:"secret"`
+	Token string `yaml: "token"`
+	Region string `yaml: "region"`
+	Bucket string `yaml: "token"`
 }
 
 func UploadToS3(fileName string) {
-	aws_access_key_id := "Insert Key ID here"
-	aws_secret_access_key := "Insert Secret Here"
-	token := ""
-	creds := credentials.NewStaticCredentials(aws_access_key_id, aws_secret_access_key, token)
-	bucketName := "test_bucket"
+	var config Config
+	filepath := ".aws/credential.yaml"
+
+	source, readErr := ioutil.ReadFile(filepath)
+
+	if readErr != nil {
+		panic(readErr)
+	}
+
+	readErr = yaml.Unmarshal(source, &config)
+	if readErr != nil {
+		panic(readErr)
+	}
+	fmt.Printf("Value: %#v\n", config)
+
+	creds := credentials.NewStaticCredentials(config.AccessKey, config.Secret, config.Token)
 
 	_, err := creds.Get()
 
@@ -32,7 +46,7 @@ func UploadToS3(fileName string) {
 		fmt.Println("Bad AWS Credential :%s", err)
 	}
 
-	cfg := aws.NewConfig().WithRegion("eu-central-1").WithCredentials(creds)
+	cfg := aws.NewConfig().WithRegion(config.Region).WithCredentials(creds)
 
 	svc := s3.New(session.New(), cfg)
 
@@ -57,7 +71,7 @@ func UploadToS3(fileName string) {
 	path := fileName
 
 	params := &s3.PutObjectInput{
-		Bucket: aws.String(bucketName),
+		Bucket: aws.String(config.Bucket),
 		Key: aws.String(path),
 		Body: fileBytes,
 		ContentLength: aws.Int64(size),

@@ -42,7 +42,6 @@ func main() {
 		}
 	}
 
-	// We're done! Print the results...
 
 	fmt.Println("\nFound", len(foundUrls), "unique image source:\n")
 
