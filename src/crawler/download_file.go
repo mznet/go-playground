@@ -13,14 +13,14 @@ func DownloadFromUrl(url string, timestamp string) {
 	tokens := strings.Split(url, "/")
 	fileName := tokens[len(tokens)-1]
 	fmt.Println("Downloading", url, "to", fileName)
-
 	path := "./tmp/" + timestamp
+	filePath := path + "/" + fileName
 
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		os.Mkdir(path, 0755)
 	}
 
-	output, err := os.Create(path + "/" + fileName)
+	output, err := os.Create(filePath)
 
 	if err != nil {
 		fmt.Println("Error while creating", fileName, "-", err)
@@ -35,14 +35,14 @@ func DownloadFromUrl(url string, timestamp string) {
 	}
 	defer response.Body.Close()
 
-	fmt.Println(output)
 	n, err := io.Copy(output, response.Body)
+
 	if err != nil {
 		fmt.Println("Error while downloading", url, "-", err)
 		return
 	}
 
 	fmt.Println(n, "bytes downloaded.")
-	aws.UploadToS3(path)
+	aws.UploadToS3(filePath)
 
 }
