@@ -21,17 +21,19 @@ func Crawl(url string, ch chan string, chFinished chan bool) {
 	}
 
 	b := resp.Body
+
 	defer b.Close() // close Body when the function returns
 
 	z := html.NewTokenizer(b)
 
 	for {
 		tt := z.Next()
-		switch {
-		case tt == html.ErrorToken:
+
+		switch tt {
+		case html.ErrorToken:
 			// End of the document, we're done
 			return
-		case tt == html.StartTagToken:
+		case html.StartTagToken, html.SelfClosingTagToken:
 			t := z.Token()
 
 			// Check if the token is an <a> tag

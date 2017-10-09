@@ -54,7 +54,7 @@ func main() {
 
 		}
 
-		imageUrl = "http:" + url
+		imageUrl = url
 
 		if strings.Contains(url, "http:") {
 			imageUrl = url
