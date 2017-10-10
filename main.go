@@ -7,6 +7,7 @@ import (
 	"crawler"
 	"tools"
 	"strings"
+	"regexp"
 )
 
 type Response struct {
@@ -16,6 +17,8 @@ type Response struct {
 
 func main() {
 	var imageUrl string
+	var urlPattern = regexp.MustCompile(`(https|http):\/\/`)
+	var urlCount int = 0
 
 	foundUrls := make(map[string]bool)
 	seedUrls := os.Args[1:]
@@ -29,7 +32,16 @@ func main() {
 
 	// Kick off the crawl process (concurrently)
 	for _, url := range seedUrls {
+		if urlPattern.MatchString(url) == false {
+			fmt.Println(url, "is not acceptable URL format")
+			continue
+		}
 		go crawler.Crawl(url, chUrls, chFinished)
+		urlCount += 1
+	}
+
+	if urlCount == 0 {
+		panic("No URL is provided")
 	}
 
 	// Subscribe to both channels
