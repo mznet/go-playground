@@ -8,7 +8,16 @@ import (
 	"tools"
 	"strings"
 	"regexp"
+	"log"
+	"github.com/spf13/viper"
 )
+
+type Configuration struct {
+	AccessKey string
+	Secret string
+	Token string
+	Bucket string
+}
 
 type Response struct {
 	hostname string
@@ -19,6 +28,21 @@ func main() {
 	var imageUrl string
 	var urlPattern = regexp.MustCompile(`(https|http):\/\/`)
 	var urlCount int = 0
+
+	var configuration Configuration
+
+	viper.SetConfigType("yaml")
+	viper.SetConfigName("credential")
+	viper.AddConfigPath(".aws")
+
+	if err := viper.ReadInConfig(); err != nil {
+		log.Fatalf("Error reading config file, %s", err)
+	}
+
+	err := viper.Unmarshal(&configuration)
+	if err != nil {
+		log.Fatalf("unable to decode into struct, %v", err)
+	}
 
 	foundUrls := make(map[string]bool)
 	seedUrls := os.Args[1:]
