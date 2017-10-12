@@ -12,6 +12,7 @@ import(
 	"net/http"
 	"io/ioutil"
 	"gopkg.in/yaml.v2"
+	"github.com/spf13/viper"
 )
 
 type Config struct {

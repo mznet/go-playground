@@ -63,7 +63,6 @@ func main() {
 
 		if tools.StringInclude(extArray, splitted[splittedCount - 1]) != true {
 			continue
-
 		}
 
 		imageUrl = url
