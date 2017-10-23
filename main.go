@@ -8,20 +8,17 @@ import (
 	"tools"
 	"strings"
 	"regexp"
-	"log"
-	"github.com/spf13/viper"
+	"io/ioutil"
+	"gopkg.in/yaml.v2"
+	"aws"
 )
 
-type Configuration struct {
-	AccessKey string
-	Secret string
-	Token string
-	Bucket string
-}
-
-type Response struct {
-	hostname string
-	path string
+type Config struct {
+	AccessKey string `yaml:"access_key"`
+	Secret string `yaml:"secret"`
+	Token string `yaml: "token"`
+	Region string `yaml: "region"`
+	Bucket string `yaml: "token"`
 }
 
 func main() {
@@ -29,20 +26,24 @@ func main() {
 	var urlPattern = regexp.MustCompile(`(https|http):\/\/`)
 	var urlCount int = 0
 
-	var configuration Configuration
+	var config Config
+	filepath := ".aws/credential.yaml"
 
-	viper.SetConfigType("yaml")
-	viper.SetConfigName("credential")
-	viper.AddConfigPath(".aws")
+	source, readErr := ioutil.ReadFile(filepath)
 
-	if err := viper.ReadInConfig(); err != nil {
-		log.Fatalf("Error reading config file, %s", err)
+	if readErr != nil {
+		panic(readErr)
 	}
 
-	err := viper.Unmarshal(&configuration)
-	if err != nil {
-		log.Fatalf("unable to decode into struct, %v", err)
+	readErr = yaml.Unmarshal(source, &config)
+	if readErr != nil {
+		panic(readErr)
 	}
+	fmt.Printf("Value: %#v\n", config)
+
+
+
+	return
 
 	foundUrls := make(map[string]bool)
 	seedUrls := os.Args[1:]

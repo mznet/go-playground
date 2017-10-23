@@ -43,6 +43,5 @@ func DownloadFromUrl(url string, timestamp string) {
 	}
 
 	fmt.Println(n, "bytes downloaded.")
-	aws.UploadToS3(filePath)
-
+	aws.Aws{}.UploadToS3(filePath)
 }
