@@ -25,8 +25,9 @@ func main() {
 	var imageUrl string
 	var urlPattern = regexp.MustCompile(`(https|http):\/\/`)
 	var urlCount int = 0
-
 	var config Config
+
+	// Read AWS Configuration
 	filepath := ".aws/credential.yaml"
 
 	source, readErr := ioutil.ReadFile(filepath)
@@ -41,9 +42,8 @@ func main() {
 	}
 	fmt.Printf("Value: %#v\n", config)
 
-
-
-	return
+	// Set AWS Configuration
+	aws.Aws{}.SetConfig(config.AccessKey, config.Secret, config.Token, config.Region, config.Bucket)
 
 	foundUrls := make(map[string]bool)
 	seedUrls := os.Args[1:]
