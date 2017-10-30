@@ -38,6 +38,6 @@ func Set(key string, value interface {}) {
 }
 
 // Get value using key
-func Get(key string, value interface{}) {
-	viper.Get(key)
+func GetString(key string) (value string){
+	return viper.GetString(key)
 }
