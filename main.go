@@ -6,7 +6,10 @@ import (
 )
 
 func main() {
+	config.LoggerSetting()
 	config.LoadConfigurationFile()
+	logs.Initialize()
+
 
 	logs.Info("test")
 
